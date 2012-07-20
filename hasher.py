@@ -5,16 +5,22 @@ License:    CC BY-SA 3.0
 Use:        Python hash generator
 Released:   www.phillips321.co.uk
 Dependencies:
-       python python-passlib(1.6) python-bcrypt
+	python
+	python-passlib(1.6)
+	python-bcrypt
+	python-ntlm
 ToDo:
-       add flags to command line -p password -s salt -u user
+	add flags to command line -p password -s salt -u user
 ChangeLog:
-       v0.1 - first release
+	v0.3 - added dependencies instructions for python-ntlm
+	v0.2 - addition of hashcat algorithms
+	v0.1 - first release
 """
-version = "0.1"
+version = "0.3"
 import sys
 import hashlib #used for MD5 SHA1, SHA256 and SHA512
 import passlib.hash #apt-get install python-passlib python-bcrypt
+import ntlm #apt-get install python-ntlm or maybe apt-get -y install python-setuptools ; easy_install python-ntlm
 def toscreen(algorithm, salt, hash):
 	if salt == "nosalt":
 		print '    %s hash is: %s' % (algorithm, hash)
@@ -31,7 +37,6 @@ if len(sys.argv) > 1 :
 		print "No salt provided"
 		
 	#Now for the output
-
 	print "  Basic Hashing algorithms"
 	toscreen("MD5", "nosalt", hashlib.md5(string).hexdigest())
 	toscreen("SHA1", "nosalt", hashlib.sha1(string).hexdigest())
@@ -103,6 +108,13 @@ if len(sys.argv) > 1 :
 	toscreen("Django 1.4 Bcrypt", salt, passlib.hash.django_bcrypt.encrypt(string, salt=salt[:22].zfill(22)))
 	toscreen("Django 1.4 PBKDF2 SHA1", salt, passlib.hash.django_pbkdf2_sha1.encrypt(string, salt=salt))
 	toscreen("Django 1.4 PBKDF2 SHA256", salt, passlib.hash.django_pbkdf2_sha256.encrypt(string, salt=salt))
+	print "hashcat algorithms"
+	toscreen("Joomla MD5(pass.salt)", "nosalt", hashlib.md5((string + salt)).hexdigest())
+	toscreen("osCommerce, xt:Commerce MD5(salt.pass)", "nosalt", hashlib.md5((salt + string)).hexdigest())
+	#toscreen("MD4", "nosalt", md4(string).hexdigest())
+	# add NTLM
+	
+	
 
 	
 else:
